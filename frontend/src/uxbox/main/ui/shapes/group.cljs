@@ -15,7 +15,7 @@
    [uxbox.main.ui.shapes.common :as common]
    [uxbox.main.ui.shapes.attrs :as attrs]))
 
-(defonce ^:dynamic *debug* (atom true))
+(defonce ^:dynamic *debug* (atom false))
 
 (declare translate-to-frame)
 (declare group-shape)
@@ -28,12 +28,7 @@
          frame (unchecked-get props "frame")
          on-mouse-down #(common/on-mouse-down % shape)
          on-context-menu #(common/on-context-menu % shape)
-         objects (-> refs/objects mf/deref)
-         children (->> (:shapes shape)
-                       (map #(get objects %))
-                       (remove nil?)
-                       vec)
-
+         children (-> (refs/objects-by-id (:shapes shape)) mf/deref)
          on-double-click
          (fn [event]
            (dom/stop-propagation event)
@@ -43,14 +38,16 @@
      [:g.shape {:on-mouse-down on-mouse-down
                 :on-context-menu on-context-menu
                 :on-double-click on-double-click}
-      [:& (group-shape shape-wrapper) {:shape (geom/transform-shape frame shape)
+      [:& (group-shape shape-wrapper) {:frame frame
+                                       :shape (geom/transform-shape frame shape)
                                        :children children}]])))
 
 (defn group-shape [shape-wrapper]
   (mf/fnc group-shape
     {::mf/wrap-props false}
     [props]
-    (let [shape (unchecked-get props "shape")
+    (let [frame (unchecked-get props "frame")
+          shape (unchecked-get props "shape")
           children (unchecked-get props "children")
           {:keys [id x y width height rotation
                   displacement-modifier
@@ -61,9 +58,10 @@
                                   rotation
                                   (+ x (/ width 2))
                                   (+ y (/ height 2))))]
-      [:g
+      [:g {:transform transform}
        (for [item children]
-         [:& shape-wrapper {:shape (-> item
+         [:& shape-wrapper {:frame frame
+                            :shape (-> item
                                        (assoc :displacement-modifier displacement-modifier)
                                        (assoc :resize-modifier resize-modifier))
                             :key (:id item)}])
@@ -72,7 +70,6 @@
                :y y
                :fill (if (deref *debug*) "red" "transparent")
                :opacity 0.8
-               :transform transform
                :id (str "group-" id)
                :width width
                :height height}]])))

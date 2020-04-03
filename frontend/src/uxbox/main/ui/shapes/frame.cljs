@@ -114,5 +114,5 @@
      [:svg {:x x :y y :width width :height height}
       [:> "rect" props]
       (for [item childs]
-        [:& shape-wrapper {:shape item :key (:id item)}])])))
+        [:& shape-wrapper {:frame shape :shape item :key (:id item)}])])))
 

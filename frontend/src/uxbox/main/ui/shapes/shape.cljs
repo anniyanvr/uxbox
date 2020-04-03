@@ -35,10 +35,8 @@
 
 (mf/defc shape-wrapper
   {::mf/wrap [wrap-memo-shape]}
-  [{:keys [shape] :as props}]
-  (let [objects (-> refs/objects mf/deref)
-        frame (get objects (:frame-id shape))
-        opts {:shape shape :frame frame}]
+  [{:keys [shape frame] :as props}]
+  (let [opts {:shape shape :frame frame}]
     (when (and shape (not (:hidden shape)))
       (case (:type shape)
         :group [:& group-wrapper opts]

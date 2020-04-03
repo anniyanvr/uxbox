@@ -36,7 +36,6 @@
   [props]
   (let [shape (unchecked-get props "shape")
         {:keys [id x y width height rotation]} shape
-
         transform (when (and rotation (pos? rotation))
                     (str/format "rotate(%s %s %s)"
                                 rotation

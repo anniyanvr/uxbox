@@ -33,7 +33,7 @@
    ["slate" :refer [Transforms]]))
 
 (def text-typography-attrs [:typography-ref-id :typography-ref-file])
-(def text-fill-attrs [:fill-color :fill-opacity :fill-color-ref-id :fill-color-ref-file :fill-color-gradient :fill :opacity ])
+(def text-fill-attrs [:fill-color :fill-opacity :fill-color-ref-id :fill-color-ref-file :fill-color-gradient :fill :opacity])
 (def text-font-attrs [:font-id :font-family :font-variant-id :font-size :font-weight :font-style])
 (def text-align-attrs [:text-align])
 (def text-spacing-attrs [:line-height :letter-spacing])
@@ -41,9 +41,9 @@
 (def text-decoration-attrs [:text-decoration])
 (def text-transform-attrs [:text-transform])
 
+(def paragraph-attrs text-align-attrs)
 (def root-attrs (d/concat text-valign-attrs
                           text-align-attrs))
-(def paragraph-attrs text-align-attrs)
 (def text-attrs (d/concat text-typography-attrs
                           text-font-attrs
                           text-align-attrs
@@ -98,7 +98,7 @@
         handle-change-grow
         (fn [event grow-type]
           (st/emit! (dwc/update-shapes ids #(assoc % :grow-type grow-type))))
-        
+
         handle-change
         (fn [event new-align]
           (on-change {:vertical-align new-align}))]
@@ -203,17 +203,18 @@
             (when-not (empty? attrs)
               (st/emit! (dwt/update-text-attrs {:id id :editor editor :attrs attrs})))))
 
-        typography (cond
-                     (and (:typography-ref-id values)
-                          (not= (:typography-ref-id values) :multiple)
-                          (:typography-ref-file values))
-                     (-> shared-libs
-                         (get-in [(:typography-ref-file values) :data :typographies (:typography-ref-id values)])
-                         (assoc :file-id (:typography-ref-file values)))
+        typography
+        (cond
+          (and (:typography-ref-id values)
+               (not= (:typography-ref-id values) :multiple)
+               (:typography-ref-file values))
+          (-> shared-libs
+              (get-in [(:typography-ref-file values) :data :typographies (:typography-ref-id values)])
+              (assoc :file-id (:typography-ref-file values)))
 
-                     (and (:typography-ref-id values)
-                          (not= (:typography-ref-id values) :multiple))
-                     (get typographies (:typography-ref-id values)))
+          (and (:typography-ref-id values)
+               (not= (:typography-ref-id values) :multiple))
+          (get typographies (:typography-ref-id values)))
 
 
         on-convert-to-typography

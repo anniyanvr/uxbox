@@ -27,7 +27,7 @@
 
 (mf/defc options
   [{:keys [page-id] :as props}]
-  (let [locale (i18n/use-locale)
+  (let [locale  (mf/deref i18n/locale)
         options (mf/deref refs/workspace-page-options)
         handle-change-color (use-change-color page-id)
 

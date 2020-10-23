@@ -40,7 +40,7 @@
 
 (defn hide
   []
-  (ptk/reify ::hide-modal
+  (ptk/reify ::hide
     ptk/UpdateEvent
     (update [_ state]
       (dissoc state ::modal))))

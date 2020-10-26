@@ -601,6 +601,11 @@
         team-id   (mf/use-ctx ctx/current-team-id)
         filters   (mf/use-state {:term "" :box :all})
 
+        on-libraries-click
+        (fn [event]
+          (dom/stop-propagation event)
+          (modal/show! :libraries-dialog {}))
+
         on-search-term-change
         (mf/use-callback
          (mf/deps team-id)
@@ -628,7 +633,7 @@
        [:div.tool-window-content
         [:div.assets-bar-title
          (t locale "workspace.assets.assets")
-         [:div.libraries-button {:on-click #(modal/show! :libraries-dialog {})}
+         [:div.libraries-button {:on-click on-libraries-click}
           i/libraries
           (t locale "workspace.assets.libraries")]]
 
